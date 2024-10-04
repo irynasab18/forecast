@@ -4,87 +4,101 @@ export class View {
         this.city = 'Минске';
         this.cross = './arrow-up.png';
         this.arrow = './arrow-down.png';
+        this.mainwWidgetDiv = null;
     }
 
-    drawFullWidget(temp = 10, windSpeed = 5, description = 'Бе', icon = './clouds.png') {
-        if (this.widgetDiv) {
-            this.widgetDiv.innerHTML = '';
-        } else {
-            this.widgetDiv = document.createElement('div');
-            this.widgetDiv.classList.add('main-div');
-            this.mainContainer.append(this.widgetDiv);
+    drawFullWidget(temp, windSpeed, description, icon) {
+        if (!this.mainwWidgetDiv) {
+            this.mainwWidgetDiv = document.createElement('div');
+            this.mainwWidgetDiv.classList.add('main-div');
+            this.mainContainer.append(this.mainwWidgetDiv);
         }
 
-        this.widgetDiv.innerHTML = `<div class="weather-widget">
+        this.mainwWidgetDiv.innerHTML = `<div class="weather-widget">
         <div class="minimize-btn">
             <img src="${this.cross}" alt="Свернуть" class="cross-icon"></div>
         <div class="weather-content">
             <p>Сейчас в ${this.city}: <span class="temperature">${temp}°C</span></p>
             <div class="weather-icon-description">
-                <img src="./clouds.png" alt="Иконка погоды" class="weather-icon">
-                <span class="description">'Бе'</span>
+                <img src="${icon}" alt="Иконка погоды" class="weather-icon">
+                <span class="description">${description}</span>
             </div>
             <p>Ветер: <span class="wind-speed">${windSpeed} м/c</span></p>
         </div>
         <div class="three-days-link">
             <span href=# class="more-data">Погода на 3 дня</div>
-        <div class="weather-content">
     </div>`
     }
 
-    drawSmallWidget() {
-        if (this.widgetDiv) {
-            this.widgetDiv.innerHTML = '';
-        }
-        this.widgetDiv.innerHTML = '';
-        this.widgetContainer = `<div class="weather-widget">
+    drawSmallWidget(temp) {
+        this.mainwWidgetDiv.innerHTML = `<div class="weather-widget">
         <div class="maximize-btn">
         <img src="${this.arrow}" alt="Развернуть" class="arrow-icon"></div>
         <div class="weather-content">
-            <p>Сейчас в ${this.city}: <span class="temperature">${this.temp}°C</span></p>
+            <p>Сейчас в ${this.city}: <span class="temperature">${temp}°C</span></p>
         </div>
     </div>`
-        this.widgetDiv = document.createElement('div');
-        this.widgetDiv.classList.add('main-div');
-        this.widgetDiv.innerHTML = this.widgetContainer;
-        this.mainContainer.append(this.widgetDiv);
     }
 
-    draw3DaysWidget(weatherForecast) {
-        const container = this.mainContainer.querySelector('.weather-widget');
-        const widgetDiv = document.createElement('div');
-        widgetDiv.classList.add('main-div');
-        widgetDiv.innerHTML = `<div class="three-days">
-        <div class="day">
-        <p><span class="date">${weatherForecast[0].date}</span></p>
-        <p><span class="date">${weatherForecast[0].temp}°C</span></p>
-        <div class="weather-icon-description">
-                <img src="${weatherForecast[0].icon}" alt="Иконка погоды" class="weather-icon">
-                <span class="description">${weatherForecast[0].description}</span>
-            </div>
-        </div>
-        <div class="day">
-        <p><span class="date">${weatherForecast[1].date}</span></p>
-        <p><span class="date">${weatherForecast[1].temp}°C</span></p>
-        <div class="weather-icon-description">
-                <img src="${weatherForecast[1].icon}" alt="Иконка погоды" class="weather-icon">
-                <span class="description">${weatherForecast[1].description}</span>
-            </div>
-        </div>
-        <div class="day">
-        <p><span class="date">${weatherForecast[2].date}</span></p>
-        <p><span class="date">${weatherForecast[2].temp}°C</span></p>
-        <div class="weather-icon-description">
-                <img src="${weatherForecast[2].icon}" alt="Иконка погоды" class="weather-icon">
-                <span class="description">${weatherForecast[2].description}</span>
-            </div>
-        </div>
-        <div class="hide-link">
-            <span href=# class="more-data">Скрыть</div>
-        <div class="weather-content">
-        </div>`
+    draw3DaysWidget(temp, windSpeed, description, icon, weatherForecast) {
+        if (!this.mainwWidgetDiv) {
+            this.mainwWidgetDiv = document.createElement('div');
+            this.mainwWidgetDiv.classList.add('main-div');
+            this.mainContainer.append(this.mainwWidgetDiv);
+        }
 
-        container.append(widgetDiv);
+        this.mainwWidgetDiv.innerHTML = `<div class="weather-widget">
+            <div class="minimize-btn">
+                <img src="${this.cross}" alt="Свернуть" class="cross-icon">
+            </div>
+            <div class="weather-content">
+                <p>Сейчас в ${this.city}: <span class="temperature">${temp}°C</span></p>
+                <div class="weather-icon-description">
+                    <img src="${icon}" alt="Иконка погоды" class="weather-icon">
+                    <span class="description">${description}</span>
+                </div>
+                <p>Ветер: <span class="wind-speed">${windSpeed} м/c</span></p>
+            </div>
+            <div class="widget-container loading">
+                <div class="loading-spinner"></div>
+                <div class="three-days">
+                </div>
+            </div>
+        </div>`;
+
+        setTimeout(() => {
+            const threeDaysDiv = this.mainwWidgetDiv.querySelector('.three-days');
+            threeDaysDiv.innerHTML = `
+                <div class="day">
+                    <p><span class="date">${weatherForecast[0].date}</span></p>
+                    <p><span class="date">${weatherForecast[0].temp}°C</span></p>
+                    <div class="weather-icon-description">
+                        <img src="${weatherForecast[0].icon}" alt="Иконка погоды" class="weather-icon">
+                        <span class="description">${weatherForecast[0].description}</span>
+                    </div>
+                </div>
+                <div class="day">
+                    <p><span class="date">${weatherForecast[1].date}</span></p>
+                    <p><span class="date">${weatherForecast[1].temp}°C</span></p>
+                    <div class="weather-icon-description">
+                        <img src="${weatherForecast[1].icon}" alt="Иконка погоды" class="weather-icon">
+                        <span class="description">${weatherForecast[1].description}</span>
+                    </div>
+                </div>
+                <div class="day">
+                    <p><span class="date">${weatherForecast[2].date}</span></p>
+                    <p><span class="date">${weatherForecast[2].temp}°C</span></p>
+                    <div class="weather-icon-description">
+                        <img src="${weatherForecast[2].icon}" alt="Иконка погоды" class="weather-icon">
+                        <span class="description">${weatherForecast[2].description}</span>
+                    </div>
+                </div>
+                <div class="hide-link">
+                    <span href=# class="hide-data">Скрыть</div>
+            `;
+
+            this.mainwWidgetDiv.querySelector('.widget-container').classList.remove('loading');
+        }, 1000);
     }
 }
 
@@ -95,8 +109,13 @@ export class Model {
         this.lon = '27.55490588794736';
         this.location = '53.90273553549529,27.55490588794736'
         //this.key = 'VlBtOfHlNSo7WWjqJlVWk7g6WlyTryn7';
+        this.key = 'gkR7ZcR15AeZ1iUSAaoihN0djBcnwNaQ';
+        //this.key = '6pjXBwYjdIEFXYGndE4WESsA5bNzrO5j';
+        //this.key = 'P0lUfX6WJRUNvuMS3ISoPU30cCEyC7U8';
         this.description = null;
         this.icon = null;
+        this.temp = null;
+        this.windSpeed = null;
     }
 
     async getCurrentWeather() {
@@ -157,12 +176,12 @@ export class Model {
     }
 
     drawSmallWidget() {
-        this.view.drawSmallWidget();
+        this.view.drawSmallWidget(this.temp);
     }
 
     async draw3DaysWidget() {
-        const values = await get3DaysWeather();
-        this.view.draw3DaysWidget(values);
+        const values = await this.get3DaysWeather();
+        this.view.draw3DaysWidget(this.temp, this.windSpeed, this.description, this.icon, values);
     }
 
     setDescription(weatherData) {
@@ -191,56 +210,44 @@ export class Controller {
         this.mainContainer = mainContainer;
         this.model = model;
 
-        this.drawInitWidget();
+        this.drawFirstWidget();
     }
 
-    async drawInitWidget(event = null) {
+    async drawFirstWidget(event = null) {
         if (event) {
             event.preventDefault();
         }
-
         await this.model.drawInitWidget();
-        this.addListeners();
+        this.addAllListeners();
     }
 
-    addListeners() {
-        const minimizeBtn = this.mainContainer.querySelector('.minimize-btn');
-        const show3DaysBtn = this.mainContainer.querySelector('.three-days-link');
-
-        console.log(minimizeBtn)
-        console.log(show3DaysBtn)
-
-        if (minimizeBtn) {
-            minimizeBtn.addEventListener('click', event => this.drawSmallWidget(event));
-        }
-
-        if (show3DaysBtn) {
-            show3DaysBtn.addEventListener('click', (event) => this.draw3DaysWidget(event));
-        }
-
+    addAllListeners() {
+        document.addEventListener('click', event => this.chooseOption(event))
     }
 
-    drawSmallWidget(event) {
+    async chooseOption(event) {
+        if (event.target.className === 'more-data') {
+            this.draw3DaysWidget();
+        }
+        if (event.target.className === 'cross-icon') {
+            this.drawSmallWidget();
+        }
+        if (event.target.className === 'hide-data' || event.target.className === 'arrow-icon') {
+            await this.drawFirstWidget();
+        }
+    }
+
+    drawSmallWidget(event = null) {
         if (event) {
             event.preventDefault();
         }
-        console.log(event)
         this.model.drawSmallWidget();
-
-        const maximizeBtn = this.mainContainer.querySelector('.maximize-btn');
-        console.log(maximizeBtn)
-        maximizeBtn.addEventListener('click', (event) => this.drawInitWidget(event));
     }
 
-    draw3DaysWidget(event) {
+    draw3DaysWidget(event = null) {
         if (event) {
             event.preventDefault();
         }
-        console.log(event)
         this.model.draw3DaysWidget();
-
-        const hideThreeDays = this.mainContainer.querySelector('.hide-link');
-        console.log(hideThreeDays)
-        hideThreeDays.addEventListener('click', (event) => this.drawFullWidget(event));
     }
 }
