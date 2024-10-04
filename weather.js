@@ -3,7 +3,6 @@ import { View, Model, Controller } from './mvc.js';
 export default class WeatherWidget {
     constructor() {
         this.mainContainer = null;
-        this.getWeather();
     }
 
     getWeather() {
